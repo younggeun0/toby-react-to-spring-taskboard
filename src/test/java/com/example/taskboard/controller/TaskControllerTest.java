@@ -2,6 +2,7 @@ package com.example.taskboard.controller;
 
 import com.example.taskboard.dto.TaskCreateRequest;
 import com.example.taskboard.dto.TaskResponse;
+import com.example.taskboard.security.JwtTokenProvider;
 import com.example.taskboard.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ class TaskControllerTest {
 
     @MockitoBean  // 웹 계층만 뜨는 테스트에 가짜 TaskService를 빈으로 넣는다
     private TaskService taskService;
+
+    @MockitoBean  // 10장: 웹 슬라이스에 함께 뜨는 JwtAuthenticationFilter가 이 빈을 요구한다
+    private JwtTokenProvider jwtTokenProvider;
 
     @Test
     void 제목이_비어있으면_400을_돌려준다() throws Exception {
