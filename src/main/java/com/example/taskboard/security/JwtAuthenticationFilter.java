@@ -1,5 +1,6 @@
 package com.example.taskboard.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,10 +31,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            String username = tokenProvider.getUsername(token); // 유효하지 않으면 예외
-            var auth = new UsernamePasswordAuthenticationToken(
-                username, null, List.of()); // 권한은 단순화
-            SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                String username = tokenProvider.getUsername(token); // 유효하지 않으면 예외
+                var auth = new UsernamePasswordAuthenticationToken(
+                    username, null, List.of()); // 권한은 단순화
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (JwtException | IllegalArgumentException e) {
+                // 위조·만료·형식 오류: 인증하지 않은 채 넘긴다. 보호된 경로라면 진입점이 401로 답한다
+            }
         }
         chain.doFilter(request, response); // 다음 검문소로 넘긴다
     }
