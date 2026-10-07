@@ -44,4 +44,10 @@ public class TaskService {
         task.markDone();   // done = true 로 바꾸기만 했다
         // save() 를 부르지 않았다!
     }
+
+    // 엔티티를 그대로 컨트롤러에 넘긴다. 지연 로딩을 관찰하려고 일부러 둔 모양이다(ch07-6에서 고친다)
+    public Task findTaskEntity(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+    }
 }
