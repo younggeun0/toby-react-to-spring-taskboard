@@ -7,6 +7,8 @@ import com.example.taskboard.TaskRepository;
 import com.example.taskboard.dto.TaskCreateRequest;
 import com.example.taskboard.dto.TaskResponse;
 import com.example.taskboard.exception.TaskNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,16 @@ public class TaskService {
     private Tag findOrCreateTag(String name) {
         return tagRepository.findByName(name)
                 .orElseGet(() -> tagRepository.save(new Tag(name)));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<TaskResponse> search(String title, String tag, Pageable pageable) {
+        return taskRepository.search(blankToNull(title), blankToNull(tag), pageable)
+                .map(TaskResponse::from);  // 트랜잭션 안에서 DTO로 바꾼다
+    }
+
+    private static String blankToNull(String s) {
+        return s == null || s.isBlank() ? null : s.trim();
     }
 
     @Transactional(readOnly = true)
