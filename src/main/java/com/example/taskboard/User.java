@@ -1,5 +1,6 @@
 package com.example.taskboard;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +21,8 @@ public class User {
 
     private String name;
 
-    @OneToMany(mappedBy = "user")  // 주인은 Task.user. 이쪽은 읽기 전용 거울
+    // 주인은 Task.user. 이쪽은 거울이지만, User를 저장할 때 새 할 일도 함께 저장(PERSIST)되게 한다
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Task> tasks = new ArrayList<>();
 
     protected User() {}
@@ -32,4 +34,10 @@ public class User {
     public Long getId() { return id; }
     public String getName() { return name; }
     public List<Task> getTasks() { return tasks; }
+
+    // 양쪽을 함께 채우는 편의 메서드. 주인(Task.user)을 채워야 DB에 user_id가 들어간다
+    public void addTask(Task task) {
+        tasks.add(task);
+        task.setUser(this);
+    }
 }

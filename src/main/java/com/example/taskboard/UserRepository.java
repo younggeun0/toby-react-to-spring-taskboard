@@ -16,4 +16,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 반환형을 Page가 아니라 List로 둬서 count 쿼리 없이 본문만 본다
     @Query("select u from User u join fetch u.tasks")
     List<User> findPageWithTasks(Pageable pageable);
+
+    // 필요한 값만 DTO로 바로 받는다. 엔티티를 거치지 않아 지연 로딩도 N+1도 없다
+    @Query("""
+        select new com.example.taskboard.UserSummary(u.name, count(t))
+        from User u left join u.tasks t
+        group by u.id, u.name
+        """)
+    List<UserSummary> findSummaries();
 }

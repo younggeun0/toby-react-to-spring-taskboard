@@ -33,6 +33,10 @@ public class Task {
         // JPA가 내부적으로 쓰는 기본 생성자
     }
 
+    public Task(String title) {
+        this(title, null);
+    }
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
@@ -51,6 +55,8 @@ public class Task {
     public boolean isDone() { return done; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public User getUser() { return user; }
+
+    void setUser(User user) { this.user = user; }  // User.addTask만 쓴다
 
     public void markDone() { this.done = true; }
 }
