@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${task.title}">할 일 (관리자)</title>
+</head>
+<body>
+<p><a th:href="@{/admin/tasks}">목록으로</a></p>
+<h1 th:text="${task.title}">제목 자리</h1>
+<dl>
+    <dt>설명</dt>
+    <dd th:text="${task.description} ?: '(없음)'">설명 자리</dd>
+    <dt>상태</dt>
+    <dd th:text="${task.done} ? '완료' : '진행 중'">상태 자리</dd>
+</dl>
+</body>
+</html>
