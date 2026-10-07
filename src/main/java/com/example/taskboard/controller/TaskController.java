@@ -30,6 +30,12 @@ public class TaskController {
         return taskService.findById(id);
     }
 
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<Void> complete(@PathVariable Long id) {
+        taskService.completeTask(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskCreateRequest request) {
         TaskResponse created = taskService.create(request);

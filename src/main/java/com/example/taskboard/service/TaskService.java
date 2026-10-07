@@ -6,6 +6,7 @@ import com.example.taskboard.dto.TaskCreateRequest;
 import com.example.taskboard.dto.TaskResponse;
 import com.example.taskboard.exception.TaskNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,5 +35,13 @@ public class TaskService {
         return taskRepository.findById(id)
                 .map(TaskResponse::from)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+    }
+
+    @Transactional
+    public void completeTask(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException(id));
+        task.markDone();   // done = true 로 바꾸기만 했다
+        // save() 를 부르지 않았다!
     }
 }
