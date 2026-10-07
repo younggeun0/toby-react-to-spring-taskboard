@@ -1,22 +1,32 @@
 package com.example.taskboard.controller;
 
+import com.example.taskboard.dto.TaskCreateRequest;
+import com.example.taskboard.dto.TaskResponse;
 import com.example.taskboard.service.TaskService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {  // 생성자로 주입받는다
+    public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @GetMapping("/api/tasks")
-    public List<String> getTasks() {
+    @GetMapping
+    public List<TaskResponse> getTasks() {
         return taskService.findAll();
+    }
+
+    @PostMapping
+    public ResponseEntity<TaskResponse> create(@RequestBody TaskCreateRequest request) {
+        TaskResponse created = taskService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 }
