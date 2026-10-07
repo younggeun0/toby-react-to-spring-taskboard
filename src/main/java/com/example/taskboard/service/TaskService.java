@@ -45,9 +45,11 @@ public class TaskService {
         // save() 를 부르지 않았다!
     }
 
-    // 엔티티를 그대로 컨트롤러에 넘긴다. 지연 로딩을 관찰하려고 일부러 둔 모양이다(ch07-6에서 고친다)
-    public Task findTaskEntity(Long id) {
-        return taskRepository.findById(id)
+    // 지연 로딩은 트랜잭션(출석부)이 열려 있는 이 안에서 끝내고, 필요한 값만 꺼내 돌려준다
+    @Transactional(readOnly = true)
+    public String findOwnerName(Long id) {
+        Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(id));
+        return task.getUser() == null ? null : task.getUser().getName();  // POST로 만든 할 일은 주인이 없다
     }
 }

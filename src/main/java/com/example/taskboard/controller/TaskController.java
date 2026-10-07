@@ -1,6 +1,5 @@
 package com.example.taskboard.controller;
 
-import com.example.taskboard.Task;
 import com.example.taskboard.dto.TaskCreateRequest;
 import com.example.taskboard.dto.TaskResponse;
 import com.example.taskboard.service.TaskService;
@@ -33,9 +32,7 @@ public class TaskController {
 
     @GetMapping("/{id}/owner")
     public String getOwner(@PathVariable Long id) {
-        Task task = taskService.findTaskEntity(id);
-        // 이 시점엔 task 테이블만 읽었다. user는 아직 안 읽은 프록시다
-        return task.getUser().getName();  // 이름을 실제로 꺼내는 순간 users를 조회한다
+        return taskService.findOwnerName(id);
     }
 
     @PatchMapping("/{id}/complete")
