@@ -9,7 +9,12 @@ spring:
     open-in-view: false             # 요청 내내 출석부를 열어 두지 않는다
     hibernate:
       ddl-auto: create-drop          # 시작 시 테이블 생성, 종료 시 삭제
-    show-sql: true                    # 실행되는 SQL을 콘솔에 찍어준다
+    show-sql: false                   # SQL은 아래 로거로 본다(둘 다 켜면 두 번 찍힌다)
     properties:
       hibernate:
         default_batch_fetch_size: 100  # 지연 로딩 컬렉션을 모아 in (…) 한 번으로 읽는다
+        format_sql: true               # SQL을 보기 좋게 줄바꿈
+
+logging:
+  level:
+    org.hibernate.SQL: debug          # 어떤 SQL이 나가는지 로그로
