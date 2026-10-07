@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>할 일 목록 (관리자)</title>
+</head>
+<body>
+<h1>할 일 목록</h1>
+<table>
+    <thead>
+    <tr>
+        <th>제목</th>
+        <th>완료 여부</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task : ${tasks}">
+        <td>
+            <a th:href="@{/admin/tasks/{id}(id=${task.id})}" th:text="${task.title}">제목 자리</a>
+        </td>
+        <td th:text="${task.done} ? '완료' : '진행 중'">상태 자리</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
