@@ -1,4 +1,4 @@
-package com.example.taskboard;
+package com.example.taskboard.service;
 
 import org.springframework.stereotype.Service;
 

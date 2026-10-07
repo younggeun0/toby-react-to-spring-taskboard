@@ -1,5 +1,6 @@
-package com.example.taskboard;
+package com.example.taskboard.controller;
 
+import com.example.taskboard.service.TaskService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
