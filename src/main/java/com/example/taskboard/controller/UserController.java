@@ -2,6 +2,7 @@ package com.example.taskboard.controller;
 
 import com.example.taskboard.UserSummary;
 import com.example.taskboard.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +22,11 @@ public class UserController {
     @GetMapping("/summary")
     public List<UserSummary> summary() {
         return userService.summarize();
+    }
+
+    // 예: /api/users/summary/page?page=0&size=2
+    @GetMapping("/summary/page")
+    public List<UserSummary> summaryPage(Pageable pageable) {
+        return userService.summarizePage(pageable);
     }
 }
