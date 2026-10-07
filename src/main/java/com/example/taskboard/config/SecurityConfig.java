@@ -1,29 +1,26 @@
 package com.example.taskboard.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// ⚠️ AI가 자신 있게 주는 구버전 코드 (Spring Security 5.x 이하)
+// 이 단계는 컴파일되지 않는 것이 정상이다. 다음 단계(ch10-3)에서 6.x 방식으로 고친다
 @Configuration
-public class SecurityConfig {
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/tasks/**").authenticated()
-                .anyRequest().permitAll()
-            )
-            .httpBasic(basic -> {});  // 지금은 가장 단순한 기본 인증으로 감만 잡는다
-
-        return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+            .csrf().disable()
+            .authorizeRequests()
+                .antMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+            .addFilterBefore(jwtFilter(),
+                UsernamePasswordAuthenticationFilter.class);
     }
 }
