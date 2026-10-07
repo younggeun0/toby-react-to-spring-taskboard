@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByName(String name);  // 메서드 이름으로 쿼리를 만든다: where name = ?
 
     // 사용자와 할 일을 JOIN 한 번으로 함께 읽는다
     @Query("select u from User u join fetch u.tasks")

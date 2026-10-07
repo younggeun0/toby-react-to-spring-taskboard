@@ -21,6 +21,8 @@ public class User {
 
     private String name;
 
+    private String password;  // BCrypt 해시만 저장한다. 평문은 어디에도 남기지 않는다
+
     // 주인은 Task.user. 이쪽은 거울이지만, User를 저장할 때 새 할 일도 함께 저장(PERSIST)되게 한다
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Task> tasks = new ArrayList<>();
@@ -31,8 +33,14 @@ public class User {
         this.name = name;
     }
 
+    public User(String name, String encodedPassword) {
+        this.name = name;
+        this.password = encodedPassword;
+    }
+
     public Long getId() { return id; }
     public String getName() { return name; }
+    public String getPassword() { return password; }
     public List<Task> getTasks() { return tasks; }
 
     // 양쪽을 함께 채우는 편의 메서드. 주인(Task.user)을 채워야 DB에 user_id가 들어간다
