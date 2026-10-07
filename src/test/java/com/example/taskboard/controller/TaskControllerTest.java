@@ -12,6 +12,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -49,7 +51,7 @@ class TaskControllerTest {
     @Test
     void 정상_요청이면_201과_만든_할_일을_돌려준다() throws Exception {
         given(taskService.create(any(TaskCreateRequest.class)))
-            .willReturn(new TaskResponse(1L, "Spring 공부", "5장", false));
+            .willReturn(new TaskResponse(1L, "Spring 공부", "5장", false, List.of()));
 
         String body = """
             { "title": "Spring 공부", "description": "5장" }

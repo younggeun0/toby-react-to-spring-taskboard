@@ -10,12 +10,14 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
+    private final TagRepository tagRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserRepository userRepository, TaskRepository taskRepository,
-                           PasswordEncoder passwordEncoder) {
+                           TagRepository tagRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.taskRepository = taskRepository;
+        this.tagRepository = tagRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -27,10 +29,19 @@ public class DataInitializer implements CommandLineRunner {
         User bogum = userRepository.save(new User("bogum", password));
         User chulsoo = userRepository.save(new User("chulsoo", password));
 
-        taskRepository.save(new Task("JPA 익히기", "7장", ara));
-        taskRepository.save(new Task("N+1 잡기", "8장", ara));
-        taskRepository.save(new Task("러닝", null, bogum));
-        taskRepository.save(new Task("스트레칭", null, bogum));
-        taskRepository.save(new Task("코드 리뷰", null, chulsoo));
+        Tag study = tagRepository.save(new Tag("공부"));
+        Tag urgent = tagRepository.save(new Tag("긴급"));
+        Tag workout = tagRepository.save(new Tag("운동"));
+
+        save(new Task("JPA 익히기", "7장", ara), study);
+        save(new Task("N+1 잡기", "8장", ara), study, urgent);
+        save(new Task("러닝", null, bogum), workout);
+        save(new Task("스트레칭", null, bogum), workout);
+        save(new Task("코드 리뷰", null, chulsoo), urgent);
+    }
+
+    private void save(Task task, Tag... tags) {
+        for (Tag tag : tags) task.addTag(tag);
+        taskRepository.save(task);
     }
 }

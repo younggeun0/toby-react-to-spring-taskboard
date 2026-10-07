@@ -1,5 +1,7 @@
 package com.example.taskboard.service;
 
+import com.example.taskboard.Tag;
+import com.example.taskboard.TagRepository;
 import com.example.taskboard.Task;
 import com.example.taskboard.TaskRepository;
 import com.example.taskboard.dto.TaskCreateRequest;
@@ -14,23 +16,37 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final TagRepository tagRepository;
 
     // 4장에서 배운 생성자 주입 — Spring이 구현체를 건네준다
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, TagRepository tagRepository) {
         this.taskRepository = taskRepository;
+        this.tagRepository = tagRepository;
     }
 
+    @Transactional(readOnly = true)  // TaskResponse.from이 태그를 지연 로딩한다
     public List<TaskResponse> findAll() {
         return taskRepository.findAll().stream()   // 메모리에서 꺼내던 자리
                 .map(TaskResponse::from)
                 .toList();
     }
 
+    @Transactional
     public TaskResponse create(TaskCreateRequest request) {
         Task task = new Task(request.title(), request.description());
+        if (request.tags() != null) {
+            request.tags().stream().distinct().forEach(name -> task.addTag(findOrCreateTag(name)));
+        }
         return TaskResponse.from(taskRepository.save(task));   // 메모리에 넣던 자리. id는 DB가 정한다
     }
 
+    // 같은 이름의 태그는 재사용한다
+    private Tag findOrCreateTag(String name) {
+        return tagRepository.findByName(name)
+                .orElseGet(() -> tagRepository.save(new Tag(name)));
+    }
+
+    @Transactional(readOnly = true)
     public TaskResponse findById(Long id) {
         return taskRepository.findById(id)
                 .map(TaskResponse::from)
