@@ -25,6 +25,11 @@ public class TaskController {
         return taskService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public TaskResponse getTask(@PathVariable Long id) {
+        return taskService.findById(id);
+    }
+
     @PostMapping
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskCreateRequest request) {
         TaskResponse created = taskService.create(request);
